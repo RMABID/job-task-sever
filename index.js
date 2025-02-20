@@ -23,9 +23,20 @@ async function run() {
   try {
     const taskCollection = client.db("ApplicationTask").collection("task");
 
+    app.get("/all-task", async (req, res) => {
+      const result = await taskCollection.find().toArray();
+      res.send(result);
+    });
+
     app.post("/task", async (req, res) => {
       const newTask = req.body;
       const result = await taskCollection.insertOne(newTask);
+      res.send(result);
+    });
+    app.delete("/task/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await taskCollection.deleteOne(query);
       res.send(result);
     });
 
